@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=base-datos
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db_data:/var/lib/postgresql/data/pgdata
+
+  web:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/code
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+    external: true
